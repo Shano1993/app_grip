@@ -1,0 +1,11 @@
+body {
+    background-color: lightgray;
+}
+
+li {
+    list-style: none;
+}
+
+img {
+    width: 50px;
+}
