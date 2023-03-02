@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} BlogMaster - Ajouter un article {% endblock %}
+
+{% block body %}
+
+    <h1>Ajouter un article</h1>
+
+    <div class="container-fluid mt-4 w-50">
+        {% form_theme form_article 'bootstrap_5_layout.html.twig' %}
+        {{ form(form_article) }}
+    </div>
+
+{% endblock %}
