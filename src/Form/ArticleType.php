@@ -51,10 +51,6 @@ class ArticleType extends AbstractType
                 ]
             ])
 
-            ->add('cover', FileType::class, [
-                'label' => "Image de l'article",
-            ])
-
             ->add('submit', SubmitType::class, [
                 'label' => "Ajouter",
             ])

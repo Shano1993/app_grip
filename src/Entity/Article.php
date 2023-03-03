@@ -27,9 +27,6 @@ class Article
     #[ORM\JoinColumn(nullable: false)]
     private User $user;
 
-    #[ORM\Column(length: 255)]
-    private ?string $cover = null;
-
     /**
      * @return User
      */
@@ -86,18 +83,6 @@ class Article
     public function setDateAdd(\DateTimeInterface $dateAdd): self
     {
         $this->dateAdd = $dateAdd;
-
-        return $this;
-    }
-
-    public function getCover(): ?string
-    {
-        return $this->cover;
-    }
-
-    public function setCover(string $cover): self
-    {
-        $this->cover = $cover;
 
         return $this;
     }

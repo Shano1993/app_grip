@@ -11,9 +11,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[IsGranted('ROLE_AUTHOR')]
 class ArticleController extends AbstractController
 {
     #[Route('/', name: 'list_article')]
@@ -34,6 +32,7 @@ class ArticleController extends AbstractController
     #[Route('/article/add', name: 'add_article')]
     public function add(Request $request, EntityManagerInterface $entityManager, ParameterBagInterface $container): Response
     {
+        $this->denyAccessUnlessGranted("ROLE_AUTHOR");
         $user = $this->getUser();
         $article = new Article();
         $form = $this->createForm(ArticleType::class, $article);
@@ -42,12 +41,6 @@ class ArticleController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $article->setUser($user);
-            $file = $form['cover']->getData();
-            $ext = $file->guessExtension();
-            if (!$ext) {
-                $ext = 'bin';
-            }
-            $file->move($container->get("upload.directory"), uniqid() . "." . $ext);
             $entityManager->persist($article);
             $entityManager->flush();
             $this->addFlash('success', "L'article est ajouté avec succès !");
@@ -56,6 +49,33 @@ class ArticleController extends AbstractController
 
         return $this->render('article/add-article.html.twig', [
             'form_article' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/article/edit/{id}', name: 'edit_article')]
+    public function edit(Article $article, Request $request, EntityManagerInterface $entityManager) :Response
+    {
+        $form = $this->createForm(ArticleType::class, $article);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+            $this->addFlash('success', "L'article a bien été mis à jour !");
+            return $this->redirectToRoute('app_home');
+        }
+        return $this->render('article/add-article.html.twig', [
+            'form_article' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/article/delete/{id}', name: 'delete_article')]
+    public function delete(Article $article, EntityManagerInterface $entityManager, ArticleRepository $articleRepository): Response
+    {
+        $entityManager->remove($article);
+        $entityManager->flush();
+
+        return $this->render('home/index.html.twig', [
+            'articles' => $articleRepository->findAll(),
         ]);
     }
 }
