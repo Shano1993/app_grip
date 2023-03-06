@@ -3,5 +3,32 @@
 {% block title %} BlogMaster - Profil {% endblock %}
 
 {% block body %}
-
+    <div>
+        <h1>Votre profile utilisateur</h1>
+        <div>
+            <p>Votre email:</p>
+            <p>{{ user.email }}</p>
+        </div>
+        <div>
+            <p>Liste des roles:</p>
+            {% for role in user.roles %}
+                <p>{{ role }}</p>
+            {% endfor %}
+        </div>
+        <div>
+            <p>Votre mot de passe:</p>
+            <p>***********</p>
+        </div>
+        <div>
+            <p>Compte vérifié ?</p>
+            {% if user.isVerified == true %}
+                <p>Votre compte est vérifié !</p>
+            {% endif %}
+            {% if user.isVerified == false %}
+                <p>Votre compte n'est pas vérifié !</p>
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}
+
+

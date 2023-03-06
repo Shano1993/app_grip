@@ -7,10 +7,11 @@ use App\Form\ArticleType;
 use App\Repository\ArticleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class ArticleController extends AbstractController
 {
@@ -30,7 +31,7 @@ class ArticleController extends AbstractController
     }
 
     #[Route('/article/add', name: 'add_article')]
-    public function add(Request $request, EntityManagerInterface $entityManager, ParameterBagInterface $container): Response
+    public function add(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $this->denyAccessUnlessGranted("ROLE_AUTHOR");
         $user = $this->getUser();
@@ -40,6 +41,21 @@ class ArticleController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $fileName = $form->get('fileName')->getData();
+            if ($fileName) {
+                $originalFileName = pathinfo($fileName->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFileName = $slugger->slug($originalFileName);
+                $newFileName = $safeFileName . '-' . uniqid() . '.' . $fileName->guessExtension();
+
+                try {
+                    $fileName->move(
+                        $this->getParameter('fileName_directory'),
+                        $newFileName
+                    );
+                }
+                catch (FileException $e) {}
+                $article->setFileName($newFileName);
+            }
             $article->setUser($user);
             $entityManager->persist($article);
             $entityManager->flush();

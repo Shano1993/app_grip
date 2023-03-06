@@ -27,6 +27,9 @@ class Article
     #[ORM\JoinColumn(nullable: false)]
     private User $user;
 
+    #[ORM\Column(length: 100)]
+    private ?string $fileName;
+
     /**
      * @return User
      */
@@ -84,6 +87,24 @@ class Article
     {
         $this->dateAdd = $dateAdd;
 
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFileName(): ?string
+    {
+        return $this->fileName;
+    }
+
+    /**
+     * @param string|null $fileName
+     * @return Article
+     */
+    public function setFileName(?string $fileName): self
+    {
+        $this->fileName = $fileName;
         return $this;
     }
 }

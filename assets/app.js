@@ -10,6 +10,5 @@ import './styles/app.css';
 import "/node_modules/bootstrap/dist/css/bootstrap.css";
 
 import './img/49334.png';
-import '../uploads/6400b1590beb9.jpg'
 
 

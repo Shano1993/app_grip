@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
 use Symfony\Component\Validator\Constraints\Length;
 
 class ArticleType extends AbstractType
@@ -48,6 +49,21 @@ class ArticleType extends AbstractType
                     'day' => "Jour",
                     'month' => "Mois",
                     'year' => "Année",
+                ]
+            ])
+
+            ->add('fileName', FileType::class, [
+                'label' => "Image de l'article",
+                'mapped' => false,
+                'constraints' => [
+                    new File([
+                        'maxSize' => "8M",
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                            'image/gif',
+                        ]
+                    ])
                 ]
             ])
 
