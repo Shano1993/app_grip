@@ -25,8 +25,10 @@
                 <li class="navbar-brand"><a href="{{ path('app_login') }}">Connexion</a>
                 <li class="navbar-brand"><a href="{{ path('app_register') }}">Inscription</a></li>
             {% endif %}
-            {% if app.user %}
+            {% if is_granted("ROLE_AUTHOR") %}
                 <li class="navbar-brand"><a href="{{ path('add_article') }}">Ajouter un article</a></li>
+            {% endif %}
+            {% if app.user %}
                 <li class="navbar-brand"><a href="{{ path('app_profile') }}">Voir le profil</a></li>
                 <li class="navbar-brand"><a href="{{ path('app_logout') }}">Déconnexion</a></li>
             {% endif %}

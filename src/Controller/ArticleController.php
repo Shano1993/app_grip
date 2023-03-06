@@ -3,7 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Article;
+use App\Entity\Comment;
 use App\Form\ArticleType;
+use App\Form\CommentType;
 use App\Repository\ArticleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -11,6 +13,7 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 class ArticleController extends AbstractController
@@ -22,18 +25,11 @@ class ArticleController extends AbstractController
             'articles' => $articleRepository->findAll(),
         ]);
     }
-    #[Route('/article', name: 'app_article')]
-    public function index(): Response
-    {
-        return $this->render('article/index.html.twig', [
-            'controller_name' => 'ArticleController',
-        ]);
-    }
 
     #[Route('/article/add', name: 'add_article')]
+    #[IsGranted('ROLE_AUTHOR')]
     public function add(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
-        $this->denyAccessUnlessGranted("ROLE_AUTHOR");
         $user = $this->getUser();
         $article = new Article();
         $form = $this->createForm(ArticleType::class, $article);
@@ -69,6 +65,7 @@ class ArticleController extends AbstractController
     }
 
     #[Route('/article/edit/{id}', name: 'edit_article')]
+    #[IsGranted('ROLE_AUTHOR')]
     public function edit(Article $article, Request $request, EntityManagerInterface $entityManager) :Response
     {
         $form = $this->createForm(ArticleType::class, $article);
@@ -85,6 +82,7 @@ class ArticleController extends AbstractController
     }
 
     #[Route('/article/delete/{id}', name: 'delete_article')]
+    #[IsGranted('ROLE_AUTHOR')]
     public function delete(Article $article, EntityManagerInterface $entityManager, ArticleRepository $articleRepository): Response
     {
         $entityManager->remove($article);
