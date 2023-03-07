@@ -16,7 +16,7 @@
                     <p class="card-text"> {{ article.title }} </p>
                 </div>
                 <div class="card-body">
-                    <p class="card-text"> {{ article.content }} </p>
+                    <p class="card-text"> {{ article.content|striptags|raw }} </p>
                 </div>
                 <div class="card-body">
                     <p class="card-text"> {{ article.dateAdd|date('d/m/y') }} </p>

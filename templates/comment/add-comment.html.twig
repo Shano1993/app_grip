@@ -3,5 +3,8 @@
 {% block title %}Hello CommentController!{% endblock %}
 
 {% block body %}
-    {{ form(form_comment) }}
+    <div class="container-fluid mt-4 w-50">
+        {% form_theme form_comment 'bootstrap_5_layout.html.twig' %}
+        {{ form(form_comment) }}
+    </div>
 {% endblock %}

@@ -52,6 +52,7 @@ class ArticleController extends AbstractController
                 catch (FileException $e) {}
                 $article->setFileName($newFileName);
             }
+
             $article->setUser($user);
             $entityManager->persist($article);
             $entityManager->flush();
